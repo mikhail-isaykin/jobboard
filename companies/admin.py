@@ -6,7 +6,20 @@ from .models import Company, Vacancy, FeedbackCompany
 class VacancyAdmin(admin.ModelAdmin):
     fieldsets = (
         ('Компания', {'fields': ('company',)}),
-        ('Основное', {'fields': ('title', 'description', 'salary', 'experience')}),
+        (
+            'Основное',
+            {
+                'fields': (
+                    'title',
+                    'description',
+                    'salary',
+                    'salary_from',
+                    'salary_to',
+                    'experience_from',
+                    'experience_to',
+                )
+            },
+        ),
         ('Условия', {'fields': ('employment_type', 'schedule', 'working_hours')}),
         ('Подробности', {'fields': ('responsibilities', 'conditions')}),
         ('Даты', {'fields': ('created_at', 'updated_at')}),
@@ -19,6 +32,8 @@ class VacancyAdmin(admin.ModelAdmin):
         'employment_type',
         'schedule',
         'salary',
+        'salary_from',
+        'salary_to',
         'created_at',
     )
     list_filter = ('employment_type', 'schedule', 'created_at')

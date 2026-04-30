@@ -2,7 +2,6 @@ from django.db import models
 from django.conf import settings
 from core.utils import validate_image_size
 from .utils import logo_upload_path
-from django.core.validators import MinValueValidator
 from professions.models import Profession
 
 
@@ -75,20 +74,16 @@ class Vacancy(models.Model):
     )
     title = models.CharField(max_length=255, verbose_name='Название вакансии')
     description = models.TextField(verbose_name='Общее описание')
-    salary = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        validators=[MinValueValidator(0)],
-        verbose_name='Зарплата',
-    )
+    salary = models.PositiveIntegerField(null=True, blank=True, verbose_name='Зарплата')
+    salary_from = models.PositiveIntegerField(blank=True, null=True, verbose_name='Минимальная зарплата')
+    salary_to = models.PositiveIntegerField(blank=True, null=True, verbose_name='Максимальная зарплата')
     salary_type = models.CharField(
         max_length=255,
         choices=SALARY_TYPE_CHOICES,
         verbose_name='Тип зарплаты',
     )
-    experience = models.CharField(
-        max_length=255, blank=True, null=True, verbose_name='Опыт работы'
-    )
+    experience_from = models.PositiveSmallIntegerField(blank=True, null=True, verbose_name='Минимальный опыт')
+    experience_to = models.PositiveSmallIntegerField(blank=True, null=True, verbose_name='Максимальный опыт')
     experience_required = models.CharField(
         max_length=50,
         choices=EXPERIENCE_CHOICES,
