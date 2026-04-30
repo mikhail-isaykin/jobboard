@@ -33,3 +33,16 @@ class Response(models.Model):
         default="new",
         verbose_name="Статус"
     )
+
+    class Meta:
+        verbose_name = "Отклик"
+        verbose_name_plural = "Отклики"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["vacancy", "resume"],
+                name="unique_response_per_vacancy_resume"
+            )
+        ]
+
+    def __str__(self):
+        return f"Отклик на «{self.vacancy}» от {self.resume}"
