@@ -1,3 +1,7 @@
 from django.contrib import admin
+from .models import SiteSettings
 
-# Register your models here.
+
+@admin.register(SiteSettings)
+class SiteSettings(admin.ModelAdmin)
+    list_display = ('logo', 'main_banner')
