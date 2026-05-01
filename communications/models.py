@@ -1,48 +1,52 @@
 from django.db import models
-from django.utils import timezone
 
 
 class Response(models.Model):
-    """Отклик на вакансию"""
+    STATUS_CHOICES = [
+        ('new', 'Новый'),
+        ('viewed', 'Просмотрен'),
+        ('accepted', 'Принят'),
+        ('rejected', 'Отклонён'),
+    ]
     vacancy = models.ForeignKey(
-        "companies.Vacancy",
+        'companies.Vacancy',
         on_delete=models.CASCADE,
-        related_name="responses",
-        verbose_name="Вакансия"
+        related_name='responses',
+        verbose_name='Вакансия'
     )
     resume = models.ForeignKey(
-        "resumes.Resume",
+        'resumes.Resume',
         on_delete=models.CASCADE,
-        related_name="responses",
-        verbose_name="Резюме"
+        related_name='responses',
+        verbose_name='Резюме',
     )
     cover_letter = models.TextField(
         blank=True,
-        null=True,
-        verbose_name="Сопроводительное письмо"
+        verbose_name='Сопроводительное письмо'
     )
-    created_at = models.DateTimeField(default=timezone.now, verbose_name="Дата отклика")
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Дата отклика'
+    )
     status = models.CharField(
         max_length=20,
-        choices=[
-            ("new", "Новый"),
-            ("viewed", "Просмотрен"),
-            ("accepted", "Принят"),
-            ("rejected", "Отклонён"),
-        ],
-        default="new",
-        verbose_name="Статус"
+        default='new',
+        choices=STATUS_CHOICES,
+        verbose_name='Статус отклика',
     )
 
     class Meta:
-        verbose_name = "Отклик"
-        verbose_name_plural = "Отклики"
+        verbose_name = 'Отклик'
+        verbose_name_plural = 'Отклики'
+        ordering = ['-created_at']
         constraints = [
             models.UniqueConstraint(
-                fields=["vacancy", "resume"],
-                name="unique_response_per_vacancy_resume"
+                fields=['vacancy', 'resume'],
+                name='unique_response_per_vacancy_resume'
             )
         ]
 
     def __str__(self):
-        return f"Отклик на «{self.vacancy}» от {self.resume}"
+        return (
+            f'Отклик на «{self.vacancy}» от {self.resume} ({self.get_status_display()})'
+        )

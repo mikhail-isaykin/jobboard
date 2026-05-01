@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'companies.apps.CompaniesConfig',
     'resumes.apps.ResumesConfig',
     'professions.apps.ProfessionsConfig',
+    'communications.apps.CommunicationsConfig',
 ]
 
 MIDDLEWARE = [

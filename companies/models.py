@@ -2,24 +2,38 @@ from django.db import models
 from django.conf import settings
 from core.utils import validate_image_size
 from .utils import logo_upload_path
-from professions.models import Profession
+from django.db.models import Avg
 
 
 class Company(models.Model):
     owner = models.OneToOneField(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='company'
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.CASCADE,
+        related_name='company',
+        verbose_name='Работодатель'
     )
-    name = models.CharField(max_length=255, verbose_name='Название')
-    description = models.TextField(blank=True, null=True, verbose_name='Описание')
-    website = models.URLField(blank=True, null=True, verbose_name='Ссылка на сайт')
+    name = models.CharField(
+        max_length=50,
+        verbose_name='Название компании'
+    )
+    description = models.TextField(
+        blank=True,
+        verbose_name='Описание'
+    )
+    website = models.URLField(
+        blank=True,
+        verbose_name='Ссылка на сайт'
+    )
     logo = models.ImageField(
         upload_to=logo_upload_path,
         blank=True,
-        null=True,
-        verbose_name='Логотип',
         validators=[validate_image_size],
+        verbose_name='Логотип',
     )
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Создано'
+    )
 
     class Meta:
         verbose_name = 'Компания'
@@ -31,10 +45,8 @@ class Company(models.Model):
 
     @property
     def average_rating(self):
-        feedbacks = self.feedbacks.values_list('rating', flat=True)
-        if feedbacks:
-            return round(sum(feedbacks) / len(feedbacks), 1)
-        return 0
+        rating = self.feedbacks.aggregate(avg=Avg('rating'))['avg']
+        return round(rating, 1) if rating is not None else 0
 
 
 class Vacancy(models.Model):
@@ -60,56 +72,71 @@ class Vacancy(models.Model):
         ('hourly', 'По часам'),
         ('negotiable', 'Договорная'),
     ]
-    EXPERIENCE_CHOICES = [
-        ('with_experience', 'С опытом'),
-        ('without_experience', 'Без опыта'),
-    ]
     company = models.ForeignKey(
-        Company,
+        'Company',
         on_delete=models.CASCADE,
         related_name='vacancies',
+        verbose_name='Компания'
     )
     profession = models.ForeignKey(
-        Profession, on_delete=models.CASCADE, related_name='vacancies'
+        'professions.Profession',
+        on_delete=models.CASCADE,
+        related_name='vacancies',
+        verbose_name='Профессия'
     )
-    title = models.CharField(max_length=255, verbose_name='Название вакансии')
+    title = models.CharField(
+        max_length=50,
+        verbose_name='Название вакансии'
+    )
     description = models.TextField(verbose_name='Общее описание')
-    salary = models.PositiveIntegerField(null=True, blank=True, verbose_name='Зарплата')
-    salary_from = models.PositiveIntegerField(blank=True, null=True, verbose_name='Минимальная зарплата')
-    salary_to = models.PositiveIntegerField(blank=True, null=True, verbose_name='Максимальная зарплата')
+    salary = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        verbose_name='Зарплата'
+    )
     salary_type = models.CharField(
-        max_length=255,
+        max_length=20,
         choices=SALARY_TYPE_CHOICES,
         verbose_name='Тип зарплаты',
     )
-    experience_from = models.PositiveSmallIntegerField(blank=True, null=True, verbose_name='Минимальный опыт')
-    experience_to = models.PositiveSmallIntegerField(blank=True, null=True, verbose_name='Максимальный опыт')
-    experience_required = models.CharField(
-        max_length=50,
-        choices=EXPERIENCE_CHOICES,
-        verbose_name='Требуемый опыт',
+    experience_from = models.PositiveSmallIntegerField(
+        blank=True,
+        null=True,
+        verbose_name='Минимальный опыт'
     )
     employment_type = models.CharField(
-        max_length=255,
+        max_length=20,
         choices=EMPLOYMENT_CHOICES,
         default='full_time',
         verbose_name='Тип занятости',
     )
     schedule = models.CharField(
-        max_length=255,
+        max_length=20,
         choices=SCHEDULE_CHOICES,
         default='day',
         verbose_name='График работы',
     )
     working_hours = models.CharField(
-        max_length=255, blank=True, null=True, verbose_name='Рабочие часы'
+        max_length=20,
+        blank=True,
+        verbose_name='Рабочие часы'
     )
     responsibilities = models.TextField(
-        blank=True, null=True, verbose_name='Обязанности'
+        blank=True, 
+        verbose_name='Обязанности'
     )
-    conditions = models.TextField(blank=True, null=True, verbose_name='Условия работы')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    conditions = models.TextField(
+        blank=True,
+        verbose_name='Условия работы'
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Создано'
+    )
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name='Обновлено'
+    )
 
     class Meta:
         verbose_name = 'Вакансия'
@@ -121,20 +148,42 @@ class Vacancy(models.Model):
 
 
 class FeedbackCompany(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='feedbacks',
+        verbose_name='Пользователь',
+    )
     company = models.ForeignKey(
-        Company, on_delete=models.CASCADE, related_name='feedbacks'
+        'companies.Company',
+        on_delete=models.CASCADE,
+        related_name='feedbacks',
+        verbose_name='Компания'
     )
     comment = models.TextField(verbose_name='Отзыв')
     rating = models.PositiveSmallIntegerField(
-        choices=[(i, str(i)) for i in range(1, 6)], verbose_name='Рейтинг'
+        choices=[(i, str(i)) for i in range(1, 6)],
+        verbose_name='Рейтинг'
     )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Создано'
+    )
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name='Обновлено'
+    )
 
     class Meta:
         verbose_name = 'Отзыв о компании'
         verbose_name_plural = 'Отзывы о компаниях'
         ordering = ['-created_at']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'company'],
+                name='unique_feedback_per_user_company'
+            )
+        ]
 
     def __str__(self):
         return f'Отзыв о {self.company} — {self.rating}/5'

@@ -13,10 +13,7 @@ class VacancyAdmin(admin.ModelAdmin):
                     'title',
                     'description',
                     'salary',
-                    'salary_from',
-                    'salary_to',
                     'experience_from',
-                    'experience_to',
                 )
             },
         ),
@@ -32,8 +29,6 @@ class VacancyAdmin(admin.ModelAdmin):
         'employment_type',
         'schedule',
         'salary',
-        'salary_from',
-        'salary_to',
         'created_at',
     )
     list_filter = ('employment_type', 'schedule', 'created_at')
@@ -49,7 +44,7 @@ class VacancyInline(admin.StackedInline):
 @admin.register(FeedbackCompany)
 class FeedbackCompanyAdmin(admin.ModelAdmin):
     readonly_fields = ('created_at', 'updated_at')
-    list_display = ('company', 'rating', 'company_average_rating', 'created_at')
+    list_display = ('user', 'company', 'rating', 'company_average_rating', 'created_at')
     list_filter = ('rating', 'created_at')
     search_fields = ('company__name', 'comment')
 
