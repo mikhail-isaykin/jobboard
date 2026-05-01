@@ -163,4 +163,4 @@ class FavoriteVacancy(models.Model):
         ]
 
     def __str__(self):
-        return f'{self.user} — {self.vacancy}'
+        return f'{self.user} добавил в избранное {self.vacancy}'

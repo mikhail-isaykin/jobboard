@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Company, Vacancy, FeedbackCompany
+from .models import Company, Vacancy, FeedbackCompany, FavoriteVacancy
 
 
 @admin.register(Vacancy)
@@ -72,3 +72,11 @@ class CompanyAdmin(admin.ModelAdmin):
     search_fields = ('name', 'owner__username', 'owner__email')
     list_filter = ('created_at',)
     inlines = (VacancyInline, FeedbackCompanyInline)
+
+
+@admin.register(FavoriteVacancy)
+class FavoriteVacancyAdmin(admin.ModelAdmin):
+    readonly_fields = ('created_at',)
+    list_display = ('id', 'user', 'vacancy', 'created_at')
+    search_fields = ('user__username', 'vacancy__title')
+    list_filter = ('created_at',)
