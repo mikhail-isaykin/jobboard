@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'resumes.apps.ResumesConfig',
     'professions.apps.ProfessionsConfig',
     'communications.apps.CommunicationsConfig',
+    'homepage_user.apps.HomepageUserConfig',
 ]
 
 MIDDLEWARE = [
@@ -130,6 +131,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = []
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
@@ -168,7 +172,7 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers': ['file'], #'console',],
+            'handlers': ['file'],  #'console',],
             'level': 'DEBUG',
             'propagate': False,
         },

@@ -3,5 +3,5 @@ from .models import SiteSettings
 
 
 @admin.register(SiteSettings)
-class SiteSettings(admin.ModelAdmin)
+class SiteSettings(admin.ModelAdmin):
     list_display = ('logo', 'main_banner')
