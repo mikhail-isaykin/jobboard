@@ -74,6 +74,8 @@ class Vacancy(models.Model):
     )
     title = models.CharField(max_length=50, verbose_name='Название вакансии')
     description = models.TextField(verbose_name='Общее описание')
+    city = models.CharField(max_length=50, verbose_name='Город')
+    street = models.CharField(max_length=50, blank=True, verbose_name='Улица')
     salary = models.PositiveIntegerField(null=True, blank=True, verbose_name='Зарплата')
     salary_type = models.CharField(max_length=20, choices=SALARY_TYPE_CHOICES, verbose_name='Тип зарплаты')
     experience_from = models.PositiveSmallIntegerField(blank=True, null=True,verbose_name='Минимальный опыт')
