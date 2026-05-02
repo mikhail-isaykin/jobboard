@@ -7,10 +7,10 @@ from django.db.models import Avg
 
 class Company(models.Model):
     owner = models.OneToOneField(
-        settings.AUTH_USER_MODEL, 
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='company',
-        verbose_name='Работодатель'
+        verbose_name='Работодатель',
     )
     name = models.CharField(max_length=50, verbose_name='Название компании')
     description = models.TextField(blank=True, verbose_name='Описание')
@@ -64,21 +64,25 @@ class Vacancy(models.Model):
         'Company',
         on_delete=models.CASCADE,
         related_name='vacancies',
-        verbose_name='Компания'
+        verbose_name='Компания',
     )
     profession = models.ForeignKey(
         'professions.Profession',
         on_delete=models.CASCADE,
         related_name='vacancies',
-        verbose_name='Профессия'
+        verbose_name='Профессия',
     )
     title = models.CharField(max_length=50, verbose_name='Название вакансии')
     description = models.TextField(verbose_name='Общее описание')
     city = models.CharField(max_length=50, verbose_name='Город')
     street = models.CharField(max_length=50, blank=True, verbose_name='Улица')
     salary = models.PositiveIntegerField(null=True, blank=True, verbose_name='Зарплата')
-    salary_type = models.CharField(max_length=20, choices=SALARY_TYPE_CHOICES, verbose_name='Тип зарплаты')
-    experience_from = models.PositiveSmallIntegerField(blank=True, null=True,verbose_name='Минимальный опыт')
+    salary_type = models.CharField(
+        max_length=20, choices=SALARY_TYPE_CHOICES, verbose_name='Тип зарплаты'
+    )
+    experience_from = models.PositiveSmallIntegerField(
+        blank=True, null=True, verbose_name='Минимальный опыт'
+    )
     employment_type = models.CharField(
         max_length=20,
         choices=EMPLOYMENT_CHOICES,
@@ -91,7 +95,9 @@ class Vacancy(models.Model):
         default='day',
         verbose_name='График работы',
     )
-    working_hours = models.CharField(max_length=20, blank=True, verbose_name='Рабочие часы')
+    working_hours = models.CharField(
+        max_length=20, blank=True, verbose_name='Рабочие часы'
+    )
     responsibilities = models.TextField(blank=True, verbose_name='Обязанности')
     conditions = models.TextField(blank=True, verbose_name='Условия работы')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Создано')
@@ -117,10 +123,12 @@ class FeedbackCompany(models.Model):
         'companies.Company',
         on_delete=models.CASCADE,
         related_name='feedbacks',
-        verbose_name='Компания'
+        verbose_name='Компания',
     )
     comment = models.TextField(verbose_name='Отзыв')
-    rating = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)], verbose_name='Рейтинг')
+    rating = models.PositiveSmallIntegerField(
+        choices=[(i, str(i)) for i in range(1, 6)], verbose_name='Рейтинг'
+    )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Создано')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Обновлено')
 
@@ -130,13 +138,13 @@ class FeedbackCompany(models.Model):
         ordering = ['-created_at']
         constraints = [
             models.UniqueConstraint(
-                fields=['user', 'company'],
-                name='unique_feedback_per_user_company'
+                fields=['user', 'company'], name='unique_feedback_per_user_company'
             )
         ]
 
     def __str__(self):
         return f'Отзыв о {self.company} — {self.rating}/5'
+
 
 class FavoriteVacancy(models.Model):
     user = models.ForeignKey(
@@ -149,7 +157,7 @@ class FavoriteVacancy(models.Model):
         'Vacancy',
         on_delete=models.CASCADE,
         related_name='in_favorites',
-        verbose_name='Вакансия'
+        verbose_name='Вакансия',
     )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Добавлено')
 
@@ -159,10 +167,38 @@ class FavoriteVacancy(models.Model):
         ordering = ['-created_at']
         constraints = [
             models.UniqueConstraint(
-                fields=['user', 'vacancy'],
-                name='unique_favorite_vacancy_per_user'
+                fields=['user', 'vacancy'], name='unique_favorite_vacancy_per_user'
             )
         ]
 
     def __str__(self):
         return f'{self.user} добавил в избранное {self.vacancy}'
+
+
+class HiddenVacancy(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='hidden_vacancies',
+        verbose_name='Пользователь',
+    )
+    vacancy = models.ForeignKey(
+        'Vacancy',
+        on_delete=models.CASCADE,
+        related_name='hidden_vacancies',
+        verbose_name='Вакансия',
+    )
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Скрыто')
+
+    class Meta:
+        verbose_name = 'Скрытая вакансия'
+        verbose_name_plural = 'Скрытые вакансии'
+        ordering = ['-created_at']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'vacancy'], name='unique_hidden_vacancy_per_user'
+            )
+        ]
+
+    def __str__(self):
+        return f'{self.user} скрыл {self.vacancy}'
