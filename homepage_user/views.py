@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from django.views.generic import TemplateView
 from core.models import SiteSettings
 from communications.models import Response, Invitation
@@ -21,4 +20,5 @@ class HomePageView(NoCompanyRequiredMixin, TemplateView):
         context['resume_views'] = ResumeView.objects.filter(resume__user = self.request.user).count()
         context['favorite_vacancy'] = FavoriteVacancy.objects.filter(user = self.request.user).count()
         context['vacancies'] = Vacancy.objects.select_related('company', 'profession')[:7].annotate(feedback_count=Count('company__feedbacks'))
+        context['user_favorites'] = FavoriteVacancy.objects.filter(user=self.request.user).values_list('vacancy_id', flat=True)
         return context
