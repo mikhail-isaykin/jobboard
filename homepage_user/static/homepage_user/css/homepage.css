@@ -1,0 +1,101 @@
+/* Баннер */
+.main-banner {
+    position: relative;
+    text-align: center;
+    color: white;
+}
+.main-banner img {
+    width: 100%;
+    height: 500px;
+    object-fit: cover;
+}
+.main-banner-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.main-banner-text h1 {
+    color: black;
+    font-weight: bold; /* Делает текст жирнее */
+
+}
+
+.main-banner-text p {
+    color: black;
+    font-weight: bold; /* Делает текст жирнее */
+}
+
+.navbar-brand img {
+    height: 40px;
+}
+.nav-link i {
+    margin-right: 6px;
+}
+
+
+.nav-item {
+    margin-right: 6px;
+    font-weight: bold;
+    font-size: 18px; /* Пример: увеличивает размер текста и иконок */
+}
+
+.nav-item :hover {
+    color: #000; /* При наведении иконки становятся полностью черными */
+}
+
+.btn-create {
+    margin-left: 15px;
+}
+
+/* Логотип компании */
+.company-logo {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+/* Лого в шапке */
+.logo-img {
+    width: 40px;
+    height: 50px;
+    object-fit: cover;
+    box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.5); /* Добавляет тень */
+}
+
+
+.badge {
+    padding: 8px 16px; /* Увеличивает внутренние отступы */
+    font-size: 14px; /* Увеличивает размер текста */
+    transition: background-color 0.3s ease; /* Плавный переход цвета */
+}
+
+.badge:hover {
+    background-color: #555; /* Цвет при наведении */
+}
+
+.badge.bg-secondary {
+    background-color: #6c757d; /* Изначальный цвет Bootstrap */
+}
+
+.badge.bg-secondary:hover {
+    background-color: #495057; /* Более темный оттенок при наведении */
+}
+
+
+
+
+/* Для золотой звезды в badge */
+.gold-star {
+    color: gold !important; /* Делает звезду золотой и переопределяет другие стили */
+    font-size: 1.2em; /* Немного увеличиваем размер звезды */
+    text-shadow: 0 0 3px rgba(255, 215, 0, 0.7), 0 0 7px rgba(255, 215, 0, 0.5); /* Более мягкое золотое свечение */
+}
+
+
+.badge.bg-dark {
+    background-color: #212529 !important; /* Темно-серый/почти черный фон от Bootstrap dark */
+    color: white; /* Делает текст внутри badge белым (если он там есть) */
+}

@@ -1,0 +1,121 @@
+{% extends "base.html" %} {% block title %}Главная - Поиск работы{% endblock %} {% block content %}
+
+<!-- Главный баннер -->
+<section class="main-banner">
+  {% if main_banner %}
+    <img src="{{ main_banner.url }}" alt="Баннер" />
+  {% else %}
+    <img src="https://lingualeo.com/ru/blog/wp-content/uploads/2024/07/pexels-photo-273222.jpeg" alt="Баннер" />
+  {% endif %}
+  <div class="main-banner-text">
+    <h1 class="display-3"><b>Найдите работу уже сегодня!</b></h1>
+      <p class="lead">Лучшие вакансии в вашем городе доступны прямо здесь</p>
+  </div>
+</section>
+
+<!-- Блок поиска -->
+<section class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="Введите название вакансии, ключевое слово или компанию" />
+        <button class="btn btn-outline-secondary" type="button">
+          <i class="bi bi-funnel"></i>
+          Фильтр
+        </button>
+        <button class="btn btn-primary" type="button">
+          <i class="bi bi-search"></i>
+          Найти
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Нижняя часть -->
+<section class="container my-5">
+  <div class="row">
+    <!-- Левая колонка -->
+    <div class="col-md-3 mb-4">
+      <div class="list-group">
+        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+          <span>
+            <i class="bi bi-envelope-check me-2"></i>
+            Отклики
+          </span>
+          <span class="badge bg-primary rounded-pill">22</span>
+        </a>
+        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+          <span>
+            <i class="bi bi-person-check me-2"></i>
+            Приглашения
+          </span>
+          <span class="badge bg-primary rounded-pill">51</span>
+        </a>
+        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+          <span>
+            <i class="bi bi-eye me-2"></i>
+            Просмотры резюме
+          </span>
+          <span class="badge bg-primary rounded-pill">42</span>
+        </a>
+        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+          <span>
+            <i class="bi bi-star me-2"></i>
+            Избранные вакансии
+          </span>
+          <span class="badge bg-primary rounded-pill">15</span>
+        </a>
+        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+          <span>
+            <i class="bi bi-telegram me-2 gold-icon"></i>
+            Telegram канал
+          </span>
+          <span class="badge bg-dark rounded-pill"><i class="bi bi-star-fill gold-star"></i></span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Правая колонка -->
+    <div class="col-md-9">
+      <div class="mb-4 d-flex flex-wrap gap-2">
+        <span class="badge bg-secondary">Для вас</span>
+        <span class="badge bg-secondary">Подработка</span>
+        <span class="badge bg-secondary">от 16 лет</span>
+        <span class="badge bg-secondary">Стажировка</span>
+        <span class="badge bg-secondary">Удаленка</span>
+      </div>
+
+      <!-- Вакансии -->
+      <div class="row g-4">
+        <div class="col-12">
+          <div class="card p-3">
+            <div class="d-flex mb-1">
+              <i class="bi bi-star me-2" title="Избранное"></i>
+              <i class="bi bi-eye-slash" title="Скрыть"></i>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h5 class="mb-0">Frontend разработчик</h5>
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/ChatGPT-Logo.svg/1024px-ChatGPT-Logo.svg.png"
+                alt="Логотип компании"
+                class="company-logo"
+              />
+            </div>
+            <p class="mb-1">от 140 000 ₽ за месяц</p>
+            <p class="mb-1">АО Дороги и Мосты</p>
+            <div class="d-flex align-items-center mb-2">
+              <i class="bi bi-star-fill text-warning me-1"></i>
+              4.4 • 88 отзывов
+            </div>
+            <p class="mb-2">Город, улица</p>
+            <form method="POST" action="/apply">
+              <button type="submit" class="btn btn-primary">Откликнуться</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
