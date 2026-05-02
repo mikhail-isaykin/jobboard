@@ -99,3 +99,9 @@
     background-color: #212529 !important; /* Темно-серый/почти черный фон от Bootstrap dark */
     color: white; /* Делает текст внутри badge белым (если он там есть) */
 }
+
+.fixed-sidebar {
+    position: sticky; /*Делает элемент "прилипчивым"*/
+    top: 20px;       /*Расстояние от верхнего края окна, когда элемент должен "прилипнуть"*/
+    align-self: flex-start;
+}

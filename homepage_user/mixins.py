@@ -9,4 +9,4 @@ class NoCompanyRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
         return not hasattr(self.request.user, 'company')
 
     def handle_no_permission(self):
-        return redirect('company')
+        return redirect('/')
