@@ -10,6 +10,7 @@ class VacancyAdmin(admin.ModelAdmin):
             'Основное',
             {
                 'fields': (
+                    'profession',
                     'title',
                     'description',
                     'salary',
@@ -27,6 +28,7 @@ class VacancyAdmin(admin.ModelAdmin):
         'title',
         'company',
         'employment_type',
+        'profession',
         'schedule',
         'salary',
         'created_at',
