@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'professions.apps.ProfessionsConfig',
     'communications.apps.CommunicationsConfig',
     'homepage_user.apps.HomepageUserConfig',
+    'companies.apps.CompaniesConfig',
 ]
 
 MIDDLEWARE = [
