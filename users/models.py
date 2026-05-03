@@ -33,7 +33,7 @@ class Profile(models.Model):
     )
     location = models.CharField(
         max_length=50,
-        blank=True,
+        default='Москва',
         verbose_name='Город'
     )
     is_verified = models.BooleanField(

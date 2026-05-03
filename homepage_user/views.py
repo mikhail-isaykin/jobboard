@@ -5,6 +5,8 @@ from companies.models import Vacancy, FavoriteVacancy
 from django.db.models import Count
 from .mixins import NoCompanyRequiredMixin
 from resumes.models import ResumeView
+from .utils import filtered_objects_with_filter_type
+from users.models import Profile
 
 
 class HomePageView(NoCompanyRequiredMixin, TemplateView):
@@ -19,6 +21,11 @@ class HomePageView(NoCompanyRequiredMixin, TemplateView):
         context['total_invitations'] = Invitation.objects.filter(resume__user = self.request.user).count()
         context['resume_views'] = ResumeView.objects.filter(resume__user = self.request.user).count()
         context['favorite_vacancy'] = FavoriteVacancy.objects.filter(user = self.request.user).count()
-        context['vacancies'] = Vacancy.objects.select_related('company', 'profession')[:7].annotate(feedback_count=Count('company__feedbacks'))
+        vacancies = (Vacancy.objects.all()
+            .select_related('company', 'profession')
+            .annotate(feedback_count=Count('company__feedbacks'))
+            .exclude(hidden_vacancies__user=self.request.user))
+        vacancies = filtered_objects_with_filter_type(vacancies, self.request.GET.get('filter'))
+        context['vacancies'] = vacancies[:7]
         context['user_favorites'] = FavoriteVacancy.objects.filter(user=self.request.user).values_list('vacancy_id', flat=True)
         return context
