@@ -15,4 +15,3 @@ def render_stars_html(rating, max_stars=5):
     if (diff := max_stars - ceil(rating)):
         html += '\n' + '\n'.join(['<i class="bi bi-star text-warning"></i>'] * diff)
     return html
-

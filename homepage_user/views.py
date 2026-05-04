@@ -6,7 +6,6 @@ from django.db.models import Count
 from .mixins import NoCompanyRequiredMixin
 from resumes.models import ResumeView
 from .utils import filtered_objects_with_filter_type
-from users.models import Profile
 
 
 class HomePageView(NoCompanyRequiredMixin, TemplateView):

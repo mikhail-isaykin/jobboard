@@ -72,7 +72,7 @@
             <li class="nav-item">
               <a class="nav-link" href="#">
                 <i class="bi bi-geo-alt"></i>
-                {{ user.profile.location }}
+                {{ user.profile.location|default:"Москва" }}
               </a>
             </li>
             <li class="nav-item">
