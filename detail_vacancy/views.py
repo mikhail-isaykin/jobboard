@@ -14,8 +14,9 @@ class DetailVacancyView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['logo'] = obj.logo if (obj := SiteSettings.objects.first()) else None
         context['user_city'] = self.request.user.profile.location if hasattr(self.request.user, 'profile') else 'Москва'
-        context['vacancies_company'] = Vacancy.objects.filter(company=self.object.company).exclude(pk=self.object.pk)
-        context['similar_vacancies'] = Vacancy.objects.exclude(company=self.object.company)[:2]
+        unhidden_vacancies = Vacancy.objects.exclude(hidden_vacancies__user=self.request.user)
+        context['vacancies_company'] = unhidden_vacancies.filter(company=self.object.company).exclude(pk=self.object.pk)
+        context['similar_vacancies'] = unhidden_vacancies.exclude(company=self.object.company)[:2]
         context['feedbacks_company'] = FeedbackCompany.objects.filter(company=self.object.company)[:4]
         rating = self.object.company.average_rating
         context['rating'] = rating
