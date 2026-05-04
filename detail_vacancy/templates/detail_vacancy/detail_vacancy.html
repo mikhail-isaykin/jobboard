@@ -1,0 +1,295 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ vacancy.title }}{% endblock %}
+{% block style %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+<link href="{% static 'detail_vacancy/css/detail_vacancy.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+  <div class="row">
+
+    <!-- Левая часть -->
+    <div class="col-lg-8">
+
+      <!-- Блок: Вакансия -->
+      <div class="vacancy-card" id="vacancy-card-detail">
+        <h3 class="fw-bold">{{ vacancy.title }}</h3>
+
+        {% if vacancy.salary %}
+          <p class="text-muted">{{ vacancy.salary }} ₽ {{ vacancy.get_salary_type_display }}</p>
+        {% else %}
+          <p class="text-muted">Договорная</p>
+        {% endif %}
+
+        <ul class="list-unstyled mb-3">
+          <li>Выплаты: {{ vacancy.get_salary_type_display }}</li>
+          {% if vacancy.experience_from %}
+            <li>Опыт работы: от {{ vacancy.experience_from }} лет</li>
+          {% else %}
+            <li>Опыт работы: не требуется</li>
+          {% endif %}
+          <li>{{ vacancy.get_employment_type_display }}</li>
+          <li>График: {{ vacancy.get_schedule_display }}</li>
+          {% if vacancy.working_hours %}
+            <li>Рабочие часы: {{ vacancy.working_hours }}</li>
+          {% endif %}
+        </ul>
+
+        <div class="d-flex gap-3 mb-3">
+          <button class="btn btn-primary btn-apply">Откликнуться</button>
+          <button class="btn btn-outline-primary btn-apply">Связаться</button>
+          <button class="btn btn-light"><i class="bi bi-heart"></i></button>
+          <!-- Контейнер для кнопки три точки + меню -->
+          <div class="position-relative">
+            <button class="btn btn-light" id="more-options-btn">
+              <i class="bi bi-three-dots"></i>
+            </button>
+
+            <!-- Меню действий -->
+            <div id="more-options-menu" class="custom-dropdown d-none">
+              <button class="dropdown-item" id="hide-this-vacancy">
+                <i class="bi bi-eye-slash me-2"></i> Скрыть эту вакансию
+              </button>
+              <button class="dropdown-item" id="hide-company-vacancies-1">
+                <i class="bi bi-building icon-strikethrough me-2"></i> Скрыть вакансии компании
+              </button>
+              <button class="dropdown-item" id="report-vacancy">
+                <i class="bi bi-flag me-2"></i> Пожаловаться на вакансию
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Блок: Описание -->
+      {% if vacancy.description %}
+      <div class="vacancy-card">
+        <h5 class="fw-bold mb-3">Описание:</h5>
+        <p>{{ vacancy.description|linebreaks }}</p>
+      </div>
+      {% endif %}
+
+      <!-- Блок: Обязанности -->
+      {% if vacancy.responsibilities %}
+      <div class="vacancy-card">
+        <h5 class="fw-bold mb-3">Обязанности:</h5>
+        <p>{{ vacancy.responsibilities|linebreaks }}</p>
+      </div>
+      {% endif %}
+
+      <!-- Блок: Условия -->
+      {% if vacancy.conditions %}
+      <div class="vacancy-card">
+        <h5 class="fw-bold mb-3">Условия:</h5>
+        <p>{{ vacancy.conditions|linebreaks }}</p>
+      </div>
+      {% endif %}
+
+      <!-- Блок: Где работать -->
+      <div class="vacancy-card mt-3">
+        <h5 class="fw-bold mb-3">Где предстоит работать</h5>
+        <p class="mb-1">
+          <i class="bi bi-geo-alt-fill text-danger me-2"></i>
+          {{ vacancy.city }}{% if vacancy.street %}, {{ vacancy.street }}{% endif %}
+        </p>
+        <p class="text-muted mb-3">
+          Вакансия опубликована {{ vacancy.created_at|date:"d E Y" }} в {{ vacancy.city }}
+        </p>
+
+        <div class="d-flex gap-2">
+          <button class="btn btn-primary">
+            <i class="bi bi-send"></i> Откликнуться
+          </button>
+          <button class="btn btn-outline-danger">
+            <i class="bi bi-exclamation-triangle"></i> Пожаловаться на вакансию
+          </button>
+        </div>
+      </div>
+
+      <!-- Блок: Отзывы (статичные пока, нужны данные в context) -->
+      <div class="vacancy-card mt-4">
+        <h5 class="fw-bold mb-3">Отзывы о компании</h5>
+
+        <div class="row row-cols-1 row-cols-md-4 g-3">
+          <div class="col">
+            <div class="card h-100 p-3 shadow-sm">
+              <h6 class="fw-bold mb-1">Старший кладовщик</h6>
+              <div class="text-warning mb-2">★★★★☆</div>
+              <p class="small text-muted mb-0">
+                Нравился коллектив, отличное расположение, интересная работа.
+              </p>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card h-100 p-3 shadow-sm">
+              <h6 class="fw-bold mb-1">Инженер-строитель</h6>
+              <div class="text-warning mb-2">★★★★☆</div>
+              <p class="small text-muted mb-0">
+                Хорошие условия труда, но много переработок.
+              </p>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card h-100 p-3 shadow-sm">
+              <h6 class="fw-bold mb-1">Мастер участка</h6>
+              <div class="text-warning mb-2">★★★★☆</div>
+              <p class="small text-muted mb-0">
+                Стабильная зарплата, но хотелось бы больше карьерных перспектив.
+              </p>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card h-100 p-3 shadow-sm">
+              <h6 class="fw-bold mb-1">Прораб</h6>
+              <div class="text-warning mb-2">★★★★☆</div>
+              <p class="small text-muted mb-0">
+                Отличная команда, современное оборудование, но сложные объекты.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-start gap-2 mt-3">
+          <button class="btn btn-primary">
+            <i class="bi bi-pencil-square"></i> Поставить отзыв
+          </button>
+          <button class="btn btn-outline-primary">
+            <i class="bi bi-chat-dots"></i> Все отзывы
+          </button>
+        </div>
+      </div>
+
+      <!-- Блок: Похожие вакансии в той же компании (статичные пока) -->
+      <div class="related-vacancies mt-5" id="reviews-block">
+        <h5 class="fw-bold mb-3">Подходящие вакансии в этой компании</h5>
+        <div class="row g-4">
+
+          <div class="col-12">
+            <div class="card p-3">
+              <div class="d-flex mb-1">
+                <i class="bi bi-star me-2" title="Избранное"></i>
+                <i class="bi bi-eye-slash" style="cursor: pointer;" title="Скрыть вакансию"></i>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 class="mb-0">Инженер-строитель</h5>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/ChatGPT-Logo.svg/1024px-ChatGPT-Logo.svg.png"
+                     alt="Логотип компании" class="company-logo">
+              </div>
+              <p class="mb-1">от 120 000 ₽ за месяц</p>
+              <p class="mb-1">АО Дороги и Мосты</p>
+              <div class="d-flex align-items-center mb-2">
+                <i class="bi bi-star-fill text-warning me-1"></i> 4.5 • 34 отзыва
+              </div>
+              <p class="mb-2">Москва, Ленинградский проспект, 12</p>
+              <form>
+                <button type="button" class="btn btn-primary">Откликнуться</button>
+              </form>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <div class="card p-3">
+              <div class="d-flex mb-1">
+                <i class="bi bi-star me-2" title="Избранное"></i>
+                <i class="bi bi-eye-slash" style="cursor: pointer;" title="Скрыть вакансию"></i>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 class="mb-0">Прораб</h5>
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png"
+                     alt="Логотип компании" class="company-logo">
+              </div>
+              <p class="mb-1">до 150 000 ₽ за месяц</p>
+              <p class="mb-1">АО Дороги и Мосты</p>
+              <div class="d-flex align-items-center mb-2">
+                <i class="bi bi-star-fill text-warning me-1"></i> 4.2 • 20 отзывов
+              </div>
+              <p class="mb-2">Санкт-Петербург, Невский проспект, 45</p>
+              <form>
+                <button type="button" class="btn btn-primary">Откликнуться</button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <button class="btn btn-outline-primary">
+            <i class="bi bi-plus-circle"></i> Еще вакансии
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Правая часть -->
+    <div class="col-lg-4">
+      <div class="sticky-sidebar">
+        <!-- Компания -->
+        <div class="vacancy-card d-flex align-items-center justify-content-between">
+          <div class="d-flex align-items-center">
+            {% if vacancy.company.logo %}
+              <img src="{{ vacancy.company.logo.url }}" alt="Логотип компании" class="company-logo">
+            {% else %}
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/ChatGPT-Logo.svg/120px-ChatGPT-Logo.svg.png"
+                   alt="Логотип компании" class="company-logo">
+            {% endif %}
+            <div>
+              <h6 class="mb-0">{{ vacancy.company.name }}</h6>
+              <small class="text-muted">{{ vacancy.company.feedbacks.count }} отзывов</small>
+            </div>
+          </div>
+          <div class="star-rating">
+            ★★★★☆
+          </div>
+        </div>
+
+        <!-- Рекомендованные вакансии (статичные пока) -->
+        <h6 class="fw-bold mt-3 mb-2">Вам могут подойти эти вакансии</h6>
+        <div class="recommended-card">
+          <p class="fw-bold mb-1">Мастер-прораб</p>
+          <p class="text-muted mb-0">от 100 000 до 120 000 ₽</p>
+          <small class="text-muted">Компания: Траст</small>
+        </div>
+        <div class="recommended-card">
+          <p class="fw-bold mb-1">Ведущий инженер-строитель</p>
+          <p class="text-muted mb-0">от 140 000 ₽</p>
+          <small class="text-muted">Компания: Белгранкорм</small>
+        </div>
+        <a href="#" class="d-block mt-2">Еще 1000 подходящих вакансий →</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Нижняя панель действий -->
+<div id="vacancy-footer" class="vacancy-footer d-none">
+  <div class="container d-flex justify-content-between align-items-center">
+    <div class="d-flex align-items-center gap-3">
+      <button class="btn btn-primary">
+        <i class="bi bi-send-fill"></i> Откликнуться
+      </button>
+      <button class="btn btn-outline-primary rounded-circle">
+        <i class="bi bi-heart"></i>
+      </button>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <button class="btn btn-outline-dark rounded-circle" title="Скрыть вакансию">
+        <i class="bi bi-eye-slash"></i>
+      </button>
+      <button id="hide-company-vacancies" class="btn btn-outline-dark rounded-circle" title="Скрыть все вакансии компании">
+        <i class="bi bi-building icon-strikethrough"></i>
+      </button>
+      <button class="btn btn-outline-danger rounded-circle" title="Пожаловаться">
+        <i class="bi bi-flag"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'detail_vacancy/js/detail_vacancy.js' %}"></script>
+
+{% endblock %}
