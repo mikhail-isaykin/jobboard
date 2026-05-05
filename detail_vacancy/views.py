@@ -2,7 +2,7 @@ from django.views.generic import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from core.models import SiteSettings
 from companies.models import Vacancy, FeedbackCompany
-from .utils import render_stars_html
+from .utils import render_stars_html, years_declension, split_lines
 
 
 class DetailVacancyView(LoginRequiredMixin, DetailView):
@@ -21,4 +21,7 @@ class DetailVacancyView(LoginRequiredMixin, DetailView):
         rating = self.object.company.average_rating
         context['rating'] = rating
         context['stars_rating'] = render_stars_html(rating)
+        context['experience_required'] = years_declension(self.object.experience_from)
+        context['responsibilities'] = split_lines(self.object.responsibilities)
+        context['conditions'] = split_lines(self.object.conditions)
         return context
