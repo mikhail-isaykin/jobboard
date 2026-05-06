@@ -174,7 +174,7 @@
               <!-- Название + логотип -->
               <div class="d-flex justify-content-between align-items-center mb-2">
                 <h5 class="mb-0">{{ vacancy.title }}</h5>
-                <img src="{{ vacancy.company.logo.url }}"
+                <img src="{{ logo }}"
                      alt="Логотип компании"
                      class="company-logo">
               </div>
@@ -225,7 +225,7 @@
         <!-- Компания -->
         <div class="vacancy-card d-flex align-items-center justify-content-between">
           <div class="d-flex align-items-center">
-            <img src="{{ vacancy.company.logo.url }}"
+            <img src="{{ logo }}"
                  alt="Логотип компании" class="company-logo">
             <div>
               <h6 class="mb-0">{{ vacancy.company.name }}</h6>

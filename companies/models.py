@@ -125,6 +125,13 @@ class FeedbackCompany(models.Model):
         related_name='feedbacks',
         verbose_name='Компания',
     )
+    vacancy = models.ForeignKey(
+        'companies.Vacancy',
+        on_delete=models.CASCADE,
+        related_name='feedbacks',
+        verbose_name='Вакансия',
+        default=1
+    )
     comment = models.TextField(verbose_name='Отзыв')
     rating = models.PositiveSmallIntegerField(
         choices=[(i, str(i)) for i in range(1, 6)], verbose_name='Рейтинг'
