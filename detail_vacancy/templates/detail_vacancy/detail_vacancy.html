@@ -282,7 +282,10 @@
         <i class="bi bi-send-fill"></i> Откликнуться
       </button>
       <button class="btn btn-outline-primary rounded-circle">
-        <i class="bi bi-heart"></i>
+        <i class="favorite-icon {% if vacancy.id in user_favorites %}bi bi-star-fill text-warning{% else %}bi bi-star{% endif %}"
+          data-id="{{ vacancy.id }}"
+          title="Избранное">
+        </i>
       </button>
     </div>
 

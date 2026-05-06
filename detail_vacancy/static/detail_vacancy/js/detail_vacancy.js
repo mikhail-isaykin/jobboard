@@ -1,50 +1,43 @@
-document.addEventListener("scroll", function () {
-const vacancyCard = document.querySelector(".vacancy-card");
-const reviewsBlock = document.querySelector("#reviews-block");
-const footer = document.getElementById("vacancy-footer");
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".favorite-icon").forEach(icon => {
+    icon.addEventListener("click", () => {
+      const vacancyId = icon.dataset.id;
 
-const vacancyBottom = vacancyCard.getBoundingClientRect().bottom;
-const reviewsTop = reviewsBlock.getBoundingClientRect().top;
+      fetch(`/vacancy/toggle/${vacancyId}/`, {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": getCookie("csrftoken"),
+          "X-Requested-With": "XMLHttpRequest"
+        }
+      })
+      .then(res => res.json())
+      .then(data => {
+        // Находим все иконки с этим vacancyId
+        document.querySelectorAll(`.favorite-icon[data-id="${vacancyId}"]`).forEach(el => {
+          if (data.status === "added") {
+            el.classList.remove("bi-star");
+            el.classList.add("bi-star-fill", "text-warning");
+          } else if (data.status === "removed") {
+            el.classList.remove("bi-star-fill", "text-warning");
+            el.classList.add("bi-star");
+          }
+        });
+      });
+    });
+  });
 
-if (vacancyBottom < 0 && reviewsTop > window.innerHeight) {
-  footer.classList.remove("d-none");
-} else {
-  footer.classList.add("d-none");
-}
-});
-
-
-
-// Получаем элементы
-const moreBtn = document.getElementById("more-options-btn");
-const moreMenu = document.getElementById("more-options-menu");
-
-moreBtn.addEventListener("click", function(e) {
-  e.stopPropagation();
-  moreMenu.classList.toggle("d-none");
-});
-
-document.addEventListener("click", function() {
-  if (!moreMenu.classList.contains("d-none")) {
-    moreMenu.classList.add("d-none");
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      const cookies = document.cookie.split(";");
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + "=")) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
   }
-});
-
-// Действия кнопок
-document.getElementById("hide-this-vacancy").addEventListener("click", function() {
-  document.getElementById("vacancy-card-detail").style.display = "none";
-  moreMenu.classList.add("d-none");
-});
-
-document.getElementById("hide-company-vacancies-1").addEventListener("click", function() {
-  const companyVacancies = document.querySelectorAll(".related-vacancies .card");
-  companyVacancies.forEach(v => v.style.display = "none");
-  const relatedBlock = document.querySelector(".related-vacancies");
-  if (relatedBlock) relatedBlock.style.display = "none";
-  moreMenu.classList.add("d-none");
-});
-
-document.getElementById("report-vacancy").addEventListener("click", function() {
-  alert("Спасибо! Вакансия отправлена на модерацию.");
-  moreMenu.classList.add("d-none");
 });
