@@ -45,8 +45,13 @@
         <div class="d-flex gap-3 mb-3">
           <button class="btn btn-primary btn-apply">Откликнуться</button>
           <button class="btn btn-outline-primary btn-apply">Связаться</button>
-          <button class="btn btn-light"><i class="bi bi-heart"></i></button>
-          <!-- Контейнер для кнопки три точки + меню -->
+          <button class="btn btn-light">
+            <i class="favorite-icon {% if vacancy.id in user_favorites %}bi bi-star-fill text-warning{% else %}bi bi-star{% endif %}"
+              data-id="{{ vacancy.id }}"
+              title="Избранное">
+            </i>
+          </button>
+           <!-- Контейнер для кнопки три точки + меню -->
           <div class="position-relative">
             <button class="btn btn-light" id="more-options-btn">
               <i class="bi bi-three-dots"></i>
