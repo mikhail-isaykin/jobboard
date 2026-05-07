@@ -59,9 +59,12 @@
 
             <!-- Меню действий -->
             <div id="more-options-menu" class="custom-dropdown d-none">
-              <button class="dropdown-item" id="hide-this-vacancy">
-                <i class="bi bi-eye-slash me-2"></i> Скрыть эту вакансию
-              </button>
+              <form action="{% url 'detail_vacancy:hide_vacancy' vacancy.id %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="dropdown-item">
+                  <i class="bi bi-eye-slash me-2"></i> Скрыть эту вакансию
+                </button>
+              </form>
               <button class="dropdown-item" id="hide-company-vacancies-1">
                 <i class="bi bi-building icon-strikethrough me-2"></i> Скрыть вакансии компании
               </button>
