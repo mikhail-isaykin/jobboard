@@ -36,4 +36,4 @@ def hide_vacancy(request, pk):
         vacancy = get_object_or_404(Vacancy, pk=pk)
         HiddenVacancy.get_or_create(user=request.user, vacancy=vacancy)
         messages.success(request, 'Вакансия скрыта')
-    return redirect('home:homepage')
+    return redirect('homepage_user:homepage')
