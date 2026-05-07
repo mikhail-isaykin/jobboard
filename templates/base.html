@@ -133,6 +133,17 @@
       </div>
     </div>
 
+    {% if messages %}
+    <div class="messages-container">
+      {% for message in messages %}
+        <div class="alert alert-dismissible fade show shadow-sm border rounded-3 bg-white" role="alert">
+          <span class="text-dark">{{ message }}</span>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    
     <!-- Контент -->
     <main>{% block content %}{% endblock %}</main>
 
