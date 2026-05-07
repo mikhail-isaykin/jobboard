@@ -1,8 +1,12 @@
 from django.views.generic import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from core.models import SiteSettings
-from companies.models import Vacancy, FeedbackCompany
+from companies.models import Vacancy, FeedbackCompany, HiddenVacancy
 from .utils import render_stars_html, years_declension, split_lines
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404
+from django.contrib import messages
+from django.shortcuts import redirect
 
 
 class DetailVacancyView(LoginRequiredMixin, DetailView):
@@ -25,3 +29,11 @@ class DetailVacancyView(LoginRequiredMixin, DetailView):
         context['responsibilities'] = split_lines(self.object.responsibilities)
         context['conditions'] = split_lines(self.object.conditions)
         return context
+
+@login_required
+def hide_vacancy(request, pk):
+    if request.method == 'POST':
+        vacancy = get_object_or_404(Vacancy, pk=pk)
+        HiddenVacancy.get_or_create(user=request.user, vacancy=vacancy)
+        messages.success(request, 'Вакансия скрыта')
+    return redirect('home:homepage')
