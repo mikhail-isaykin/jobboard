@@ -209,3 +209,39 @@ class HiddenVacancy(models.Model):
 
     def __str__(self):
         return f'{self.user} скрыл {self.vacancy}'
+
+
+class VacancyQuerySet(models.QuerySet):
+    '''Только видимые для пользователя вакансии user_vacancies = Vacancy.objects.visible_for_user(request.user)'''
+    def visible_for_user(self, user):
+        return Vacancy.objects.exclude(user=)
+
+
+class HiddenCompany(models.Model):
+    objects = VacancyQuerySet.as_manager()
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='hidden_companies',
+        verbose_name='Пользователь',
+    )
+    company = models.ForeignKey(
+        'Company',
+        on_delete=models.CASCADE,
+        related_name='hidden_companies',
+        verbose_name='Компания',
+    )
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Скрыто')
+
+    class Meta:
+        verbose_name = 'Скрытая компания'
+        verbose_name_plural = 'Скрытые компании'
+        ordering = ['-created_at']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'company'], name='unique_hidden_company_per_user'
+            )
+        ]
+
+    def __str__(self):
+        return f'{self.user} скрыл {self.company}'
