@@ -26,3 +26,10 @@ class VacancyQuerySetTest(TestCase):
     def test_visible_vacancy_included(self):
         qs = Vacancy.objects.visible_for_user(self.user)
         self.assertIn(self.vacancy, qs)
+
+
+def test_unauthenticated_user_sees_all(self):
+    HiddenVacancy.objects.create(user=self.user, vacancy=self.vacancy)
+    from django.contrib.auth.models import AnonymousUser
+    qs = Vacancy.objects.visible_for_user(AnonymousUser())
+    self.assertIn(self.vacancy, qs)
