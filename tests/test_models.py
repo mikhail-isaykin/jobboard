@@ -46,3 +46,41 @@ def test_multiple_hidden_vacancies_excluded(self):
     HiddenVacancy.objects.create(user=self.user, vacancy=vacancy2)
     qs = Vacancy.objects.visible_for_user(self.user)
     self.assertEqual(qs.count(), 0)
+
+def test_hidden_vacancy_is_user_specific(self):
+    """Vacancy hidden by one user remains visible to another."""
+    other_user = User.objects.create_user(username='other', password='pass')
+    vacancy2 = Vacancy.objects.create(
+        company=self.company,
+        title='Designer',
+        city='SPb',
+        salary_type='monthly',
+        description='Test',
+    )
+    vacancy3 = Vacancy.objects.create(
+        company=self.company,
+        title='Manager',
+        city='Kazan',
+        salary_type='weekly',
+        description='Test',
+    )
+        # self.user hides vacancy and vacancy2
+    HiddenVacancy.objects.create(user=self.user, vacancy=self.vacancy)
+    HiddenVacancy.objects.create(user=self.user, vacancy=vacancy2)
+
+    # other_user hides only vacancy3
+    HiddenVacancy.objects.create(user=other_user, vacancy=vacancy3)
+
+    qs_user = Vacancy.objects.visible_for_user(self.user)
+    qs_other = Vacancy.objects.visible_for_user(other_user)
+
+    self.assertNotIn(self.vacancy, qs_user)
+    self.assertNotIn(vacancy2, qs_user)
+    self.assertIn(vacancy3, qs_user)
+
+    self.assertIn(self.vacancy, qs_other)
+    self.assertIn(vacancy2, qs_other)
+    self.assertNotIn(vacancy3, qs_other)
+
+    self.assertEqual(qs_user.count(), 1)
+    self.assertEqual(qs_other.count(), 2)
