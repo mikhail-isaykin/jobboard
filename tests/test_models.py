@@ -33,3 +33,16 @@ def test_unauthenticated_user_sees_all(self):
     from django.contrib.auth.models import AnonymousUser
     qs = Vacancy.objects.visible_for_user(AnonymousUser())
     self.assertIn(self.vacancy, qs)
+
+def test_multiple_hidden_vacancies_excluded(self):
+    vacancy2 = Vacancy.objects.create(
+        company=self.company,
+        title='Designer',
+        city='Moscow',
+        salary_type='monthly',
+        description='Test',
+    )
+    HiddenVacancy.objects.create(user=self.user, vacancy=self.vacancy)
+    HiddenVacancy.objects.create(user=self.user, vacancy=vacancy2)
+    qs = Vacancy.objects.visible_for_user(self.user)
+    self.assertEqual(qs.count(), 0)
