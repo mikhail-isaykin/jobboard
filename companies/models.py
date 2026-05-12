@@ -42,7 +42,7 @@ class VacancyQuerySet(models.QuerySet):
 
     def visible_for_user(self, user):
         if user.is_authenticated:
-            return self.objects.exclude(hidden_vacancies__user=user).exclude(
+            return self.exclude(hidden_vacancies__user=user).exclude(
                 company__hidden_companies__user=user
             )
         return self
@@ -260,8 +260,10 @@ class Complaint(models.Model):
         verbose_name='Отправитель жалобы',
     )
     vacancy = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        'Vacancy',
         on_delete=models.CASCADE,
+        related_name='complaints',
+        verbose_name='Вакансия',
     )
     reason = models.TextField(
         help_text='Опишите, что нарушает данная вакансия', verbose_name='Причина жалобы'

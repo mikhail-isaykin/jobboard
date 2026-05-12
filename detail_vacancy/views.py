@@ -41,11 +41,10 @@ def hide_vacancy(request, pk):
 
 
 @login_required
-def submit_complaint(request):
+def submit_complaint(request, vacancy_id):
     form = ComplaintForm()
+    vacancy = get_object_or_404(Vacancy, pk=vacancy_id)
     if request.method == 'POST':
-        vacancy_id = request.POST.get('vacancy_id')
-        vacancy = get_object_or_404(Vacancy, pk=vacancy_id)
         form = ComplaintForm(request.POST)
         if form.is_valid():
             complaint = form.save(commit=False)
@@ -53,6 +52,5 @@ def submit_complaint(request):
             complaint.vacancy = vacancy
             complaint.save()
             messages.success(request, 'Ваша жалоба успешно отправлена!')
-            return redirect('vacancy_detail')
-    vacancy_id = request.GET.get('vacancy_id')
-    return render(request, 'complaint.html', {'form': form, 'vacancy_id': vacancy_id})
+            return redirect('vacancy_detail', pk=vacancy_id)
+    return render(request, 'detail_vacancy/complaint.html', {'form': form, 'vacancy': vacancy})

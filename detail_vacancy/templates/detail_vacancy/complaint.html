@@ -23,7 +23,7 @@
           Если вы заметили нарушение, некорректную информацию или мошеннические действия — сообщите нам.
         </p>
 
-        <form method="post" action="{% url 'detail_vacancy:submit_complaint' vacancy.id %}">
+        <form method="post" action="{% url 'submit_complaint' vacancy.id %}">
           {% csrf_token %}
           <div class="mb-3">
             <label for="reason" class="form-label fw-semibold">Причина жалобы</label>
@@ -36,7 +36,7 @@
           </div>
 
           <div class="d-flex justify-content-between mt-4">
-            <a href="{% url 'detail_vacancy:detail_vacancy' vacancy.id %}" class="btn btn-outline-secondary">
+            <a href="{% url 'vacancy_detail' vacancy.id %}" class="btn btn-outline-secondary">
               <i class="bi bi-arrow-left"></i> Назад к вакансии
             </a>
             <button type="submit" class="btn btn-danger">
