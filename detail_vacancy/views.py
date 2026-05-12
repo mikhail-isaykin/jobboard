@@ -18,7 +18,7 @@ class DetailVacancyView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['logo'] = obj.logo if (obj := SiteSettings.objects.first()) else None
         context['user_city'] = self.request.user.profile.location if hasattr(self.request.user, 'profile') else 'Москва'
-        unhidden_vacancies = Vacancy.objects.exclude(hidden_vacancies__user=self.request.user)
+        unhidden_vacancies = Vacancy.objects.visible_for_user(self.request.user)
         context['vacancies_company'] = unhidden_vacancies.filter(company=self.object.company).exclude(pk=self.object.pk)
         context['similar_vacancies'] = unhidden_vacancies.exclude(company=self.object.company)[:2]
         context['feedbacks_company'] = FeedbackCompany.objects.filter(company=self.object.company)[:4]
@@ -34,6 +34,6 @@ class DetailVacancyView(LoginRequiredMixin, DetailView):
 def hide_vacancy(request, pk):
     if request.method == 'POST':
         vacancy = get_object_or_404(Vacancy, pk=pk)
-        HiddenVacancy.get_or_create(user=request.user, vacancy=vacancy)
+        HiddenVacancy.objects.get_or_create(user=request.user, vacancy=vacancy)
         messages.success(request, 'Вакансия скрыта')
     return redirect('homepage_user:homepage')

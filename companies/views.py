@@ -2,7 +2,9 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
-from companies.models import Vacancy, FavoriteVacancy, HiddenVacancy
+from companies.models import Vacancy, FavoriteVacancy, HiddenVacancy, Company, HiddenCompany
+from django.contrib import messages
+from django.shortcuts import redirect
 
 
 @login_required
@@ -43,3 +45,14 @@ def toggle_hidden_vacancy(request):
         hidden_vacancy.delete()
         return JsonResponse({'status': 'removed'})
     return JsonResponse({'status': 'hidden'})
+
+@login_required
+@require_POST   
+def hide_company(request, pk):
+    company = get_object_or_404(Company, pk=pk)
+    obj, created = HiddenCompany.objects.get_or_create(user=request.user, company=company)
+    if created:
+        messages.success(request, 'Компания скрыта и больше не будет отображаться.')
+    else:
+        messages.success(request, 'Компания уже скрыта.')
+    return redirect('homepage_user:homepage')
