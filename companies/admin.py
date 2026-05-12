@@ -1,7 +1,8 @@
 from django.contrib import admin
 from .models import (
     Company, Vacancy, FeedbackCompany,
-    FavoriteVacancy, HiddenVacancy, HiddenCompany
+    FavoriteVacancy, HiddenVacancy, HiddenCompany,
+    Complaint,
 )
 
 @admin.register(Vacancy)
@@ -96,7 +97,16 @@ class HiddenVacancyAdmin(admin.ModelAdmin):
 
 @admin.register(HiddenCompany)
 class HiddenCompanyAdmin(admin.ModelAdmin):
-    readonly_fields = ('created_at')
+    readonly_fields = ('created_at',)
     list_display = ('id', 'user', 'company', 'created_at')
     search_fields = ('user__username', 'vacancy__name')
     list_filter = ('created_at',)
+
+
+@admin.register(Complaint)
+class ComplaintAdmin(admin.ModelAdmin):
+    readonly_fields = ('created_at',)
+    list_display = ('user', 'vacancy', 'reason', 'created_at')
+    list_filter = ('created_at',)
+    search_fields = ('user__username', 'reason')
+    

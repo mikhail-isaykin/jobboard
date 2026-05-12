@@ -38,10 +38,13 @@ class Company(models.Model):
 
 
 class VacancyQuerySet(models.QuerySet):
-    '''Только видимые для пользователя вакансии user_vacancies = Vacancy.objects.visible_for_user(request.user)'''
+    """Только видимые для пользователя вакансии user_vacancies = Vacancy.objects.visible_for_user(request.user)"""
+
     def visible_for_user(self, user):
         if user.is_authenticated:
-            return self.objects.exclude(hidden_vacancies__user=user).exclude(company__hidden_companies__user=user)
+            return self.objects.exclude(hidden_vacancies__user=user).exclude(
+                company__hidden_companies__user=user
+            )
         return self
 
 
@@ -139,7 +142,7 @@ class FeedbackCompany(models.Model):
         on_delete=models.CASCADE,
         related_name='feedbacks',
         verbose_name='Вакансия',
-        default=1
+        default=1,
     )
     comment = models.TextField(verbose_name='Отзыв')
     rating = models.PositiveSmallIntegerField(
@@ -247,3 +250,28 @@ class HiddenCompany(models.Model):
 
     def __str__(self):
         return f'{self.user} скрыл {self.company}'
+
+
+class Complaint(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='complaints',
+        verbose_name='Отправитель жалобы',
+    )
+    vacancy = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    reason = models.TextField(
+        help_text='Опишите, что нарушает данная вакансия', verbose_name='Причина жалобы'
+    )
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Отправлено')
+
+    class Meta:
+        verbose_name = 'Жалоба'
+        verbose_name_plural = 'Жалобы'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'Жалоба от {self.user} на вакансию {self.vacancy}'
