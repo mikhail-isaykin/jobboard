@@ -1,12 +1,13 @@
 from django.views.generic import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from core.models import SiteSettings
-from companies.models import Vacancy, FeedbackCompany, HiddenVacancy
+from companies.models import Vacancy, FeedbackCompany, HiddenVacancy, Complaint
 from .utils import render_stars_html, years_declension, split_lines
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.contrib import messages
 from django.shortcuts import redirect
+from companies.forms import ComplaintForm
 
 
 class DetailVacancyView(LoginRequiredMixin, DetailView):
@@ -37,3 +38,21 @@ def hide_vacancy(request, pk):
         HiddenVacancy.objects.get_or_create(user=request.user, vacancy=vacancy)
         messages.success(request, 'Вакансия скрыта')
     return redirect('homepage_user:homepage')
+
+
+@login_required
+def submit_complaint(request):
+    form = ComplaintForm()
+    if request.method == 'POST':
+        vacancy_id = request.POST.get('vacancy_id')
+        vacancy = get_object_or_404(Vacancy, pk=vacancy_id)
+        form = ComplaintForm(request.POST)
+        if form.is_valid():
+            complaint = form.save(commit=False)
+            complaint.user = request.user
+            complaint.vacancy = vacancy
+            complaint.save()
+            messages.success(request, 'Ваша жалоба успешно отправлена!')
+            return redirect('vacancy_detail')
+    vacancy_id = request.GET.get('vacancy_id')
+    return render(request, 'complaint.html', {'form': form, 'vacancy_id': vacancy_id})
