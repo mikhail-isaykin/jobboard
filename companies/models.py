@@ -37,7 +37,16 @@ class Company(models.Model):
         return round(rating, 1) if rating is not None else 0
 
 
+class VacancyQuerySet(models.QuerySet):
+    '''Только видимые для пользователя вакансии user_vacancies = Vacancy.objects.visible_for_user(request.user)'''
+    def visible_for_user(self, user):
+        if user.is_authenticated:
+            return self.objects.exclude(hidden_vacancies__user=user).exclude(company__hidden_companies__user=user)
+        return self
+
+
 class Vacancy(models.Model):
+    objects = VacancyQuerySet.as_manager()
     EMPLOYMENT_CHOICES = [
         ('full_time', 'Полная'),
         ('part_time', 'Частичная'),
@@ -211,14 +220,7 @@ class HiddenVacancy(models.Model):
         return f'{self.user} скрыл {self.vacancy}'
 
 
-class VacancyQuerySet(models.QuerySet):
-    '''Только видимые для пользователя вакансии user_vacancies = Vacancy.objects.visible_for_user(request.user)'''
-    def visible_for_user(self, user):
-        return Vacancy.objects.exclude(user=)
-
-
 class HiddenCompany(models.Model):
-    objects = VacancyQuerySet.as_manager()
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
